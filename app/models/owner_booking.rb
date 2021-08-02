@@ -1,0 +1,2 @@
+class OwnerBooking < Booking
+end
