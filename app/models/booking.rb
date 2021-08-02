@@ -5,7 +5,7 @@ class Booking < ApplicationRecord
   enum status: { active: 0, cancelled: 1 }
   belongs_to :bike
   validates_uniqueness_of :bike_id,
-    scope: :date,
+    scope: [:date, :status],
     conditions: -> { where(status: :active) },
     message: 'is not available any longer'
 end

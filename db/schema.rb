@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_24_021722) do
+ActiveRecord::Schema.define(version: 2021_07_24_055055) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,8 +33,8 @@ ActiveRecord::Schema.define(version: 2021_07_24_021722) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "type"
     t.integer "status", default: 0
+    t.index ["bike_id", "status", "date"], name: "index_bike_date_status_on_active_bookings", unique: true, where: "(status = 0)"
     t.index ["bike_id"], name: "index_bookings_on_bike_id"
-    t.index ["date", "bike_id"], name: "index_bike_date_on_active_bookings", unique: true, where: "(status = 0)"
     t.index ["status"], name: "index_bookings_on_status"
     t.index ["type"], name: "index_bookings_on_type"
   end
