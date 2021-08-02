@@ -6,24 +6,14 @@ class CreateBooking < Service
   end
 
   def run
-    booking = Booking.new(
+    @booking = CustomerBooking.create(
       bike_id: @bike.id,
       date: @date,
       user_full_name: @user_full_name,
     )
-
-    if booking.valid? && bike_available?
-      booking.save
-      booking
-    else
-      booking.errors.add(:date, "is not available for this bike")
-      booking
-    end
-  end
-
-  private
-
-  def bike_available?
-    @bike.bookings.on_date(@date).empty?
+  rescue ActiveRecord::RecordNotUnique
+    @booking.errors.add(:bike_id, 'is not available any longer')
+  ensure
+    @booking
   end
 end

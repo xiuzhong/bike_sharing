@@ -1,8 +1,10 @@
-<div class="flex p-4" data-search-filters>
+<div class="flex p-4">
   <label class="mr-2">Order by:</label>
-  <%= select_tag :order_by, options_for_select([ "Default", "Name", "Price" ], "Default"),
+  <%= select_tag :order_by, options_for_select([ "Default", "Name", "Price", "Popularity" ], "Default"),
     { "data-search-order-by" => "true" }
   %>
+  <label class="m-2">Available on:</label>
+  <%= date_field_tag :date, nil, min: Date.today, 'data-search-on-date' => true %>
 </div>
 
 <div class="search-bikes" data-search-bikes>
