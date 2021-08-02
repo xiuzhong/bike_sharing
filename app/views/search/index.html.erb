@@ -1,6 +1,6 @@
 <div class="flex p-4" data-search-filters>
   <label class="mr-2">Order by:</label>
-  <%= select_tag :order_by, options_for_select([ "Default", "Name", "Price" ], "Default"),
+  <%= select_tag :order_by, options_for_select([ "Default", "Name", "Price", "Popularity" ], "Default"),
     { "data-search-order-by" => "true" }
   %>
 </div>
