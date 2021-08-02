@@ -1,0 +1,41 @@
+.booking-button {
+  display: inline-block;
+  padding: 15px 50px;
+  border: 2px solid #e7a282;
+  background-color: #f1d6c9;
+  margin: 40px auto;
+  border-radius: 10px;
+  box-sizing:  border-box;
+  text-decoration: none;
+  font-weight: 300;
+  color: #e4916b;
+  text-align: center;
+  transition:  all 0.2s;
+}
+
+.booking-form {
+  padding-top: 20px;
+  width: 70%;
+  margin: auto;
+
+  label {
+    display: block;
+    padding-top: 10px;
+  }
+
+  input {
+    display: block;
+  }
+}
+
+.booking-confirmation {
+  padding-top: 20px;
+  width: 70%;
+  margin: auto;
+}
+
+.booking-errors {
+  padding-top: 10px;
+  margin: auto;
+  color: red;
+}

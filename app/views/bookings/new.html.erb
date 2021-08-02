@@ -1,0 +1,22 @@
+<div class="wrapper--small">
+  <div class="card">
+    <%= render partial: "common/bike", locals: { bike: @booking.bike } %>
+    <%= form_with url: bike_booking_path, local: false, class: "pt-6", data: { booking_form: true } do |form| %>
+      <%= form.hidden_field :bike_id, value: @booking.bike_id %>
+      <div class="mb-4">
+        <%= form.label :user_full_name, "Name" %>
+        <%= form.text_field :user_full_name %>
+      </div>
+      <div class="mb-5">
+        <%= form.label :date, "Date" %>
+        <%= form.date_field :date, min: Date.today, value: Date.today %>
+      </div>
+      <div class="booking-errors" data-booking-errors>
+      </div>
+      <div>
+        <%= form.submit "Book", class: "button" %>
+      </div>
+    <% end %>
+    <div class="alert hidden mt-5" data-booking-alert></div>
+  </div>
+</div>

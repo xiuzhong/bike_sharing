@@ -1,0 +1,28 @@
+.search-bikes {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card--search {
+  display: flex;
+  flex-direction: column;
+  flex: 1 16%;
+  margin: 10px;
+}
+
+@media ( max-width: 920px ) {
+  .card--search {
+    flex: 1 21%;
+  }
+
+  .card--search:first-child,
+  .card--search:nth-child(2) {
+    flex: 2 46%;
+  }
+}
+
+@media ( max-width: 600px ) {
+  .card--search {
+    flex: 1 46%;
+  }
+}
