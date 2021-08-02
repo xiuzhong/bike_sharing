@@ -1,0 +1,30 @@
+{
+  "name": "bike-next-door",
+  "private": true,
+  "dependencies": {
+    "@rails/actioncable": "^6.0.0",
+    "@rails/activestorage": "^6.0.0",
+    "@rails/ujs": "^6.0.0",
+    "@rails/webpacker": "5.4.0",
+    "axios": "^0.21.1",
+    "turbolinks": "^5.2.0",
+    "webpack": "^4.46.0",
+    "webpack-cli": "^3.3.12"
+  },
+  "version": "0.1.0",
+  "devDependencies": {
+    "enzyme": "^3.11.0",
+    "jest": "^26.6.3",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "scripts": {
+    "test": "yarn jest",
+    "test:debug": "node --inspect node_modules/.bin/jest --runInBand"
+  },
+  "jest": {
+    "roots": [
+      "./spec/javascript"
+    ],
+    "watchman": false
+  }
+}

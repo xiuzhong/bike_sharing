@@ -1,0 +1,6 @@
+<div class="image" style='background-image: url("<%= asset_url(bike.image_name) %>")'></div>
+<div>
+  <div class="font-bold capitalize mb-1"><%= bike.name.capitalize %></div>
+  <div class="mb-2"><%= bike.description&.capitalize %></div>
+  <div class="italic"><%= number_to_currency(bike.price_per_day) %> per day</div>
+</div>
