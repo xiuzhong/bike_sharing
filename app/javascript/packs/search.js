@@ -62,17 +62,39 @@ const generateSearchBikesHtml = (orderBy) => {
   return bikeStore[orderBy];
 };
 
-export const getBikes = () => {
+const currentOrderBy = () => {
+  const searchOrderByEl = document.querySelector('[data-search-order-by]');
+  if (!!searchOrderByEl) {
+    return searchOrderByEl.value;
+  }
+};
+
+export const getBikes = (availableOn) => {
   return axios
-    .get('/search', axiosConfig)
+    .get(`/search?date=${availableOn}`, axiosConfig)
     .then(({ data: bikes }) => bikes)
     .catch((error) => console.log(error));
+};
+
+const initSearchForm = () => {
+  const searchOrderOnDateEl = document.querySelector('[data-search-on-date]');
+  const searchBikesEl = document.querySelector('[data-search-bikes]');
+
+  if (!!searchOrderOnDateEl) {
+    searchOrderOnDateEl.addEventListener('change', (event) => {
+      getBikes(event.target.value)
+      .then((bikes) => {
+        bikeStore = initBikeStore(bikes);
+        searchBikesEl.innerHTML = generateSearchBikesHtml(currentOrderBy());
+      });
+    });
+  }
 };
 
 const onloadSearch = () => {
   const searchBikesEl = document.querySelector('[data-search-bikes]');
   if (!!searchBikesEl) {
-    getBikes(searchBikesEl)
+    getBikes()
       .then((bikes) => {
         bikeStore = initBikeStore(bikes);
         searchBikesEl.innerHTML = generateSearchBikesHtml(ORDER_BY.DEFAULT);
@@ -85,6 +107,7 @@ const onloadSearch = () => {
       });
     }
   }
+  initSearchForm();
 };
 
 // Prevent overwriting on window.onload function by appending to the load event

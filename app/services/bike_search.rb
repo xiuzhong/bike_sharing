@@ -4,7 +4,7 @@ class BikeSearch < Service
   end
 
   def run
-    bikes_with_popularity.map do |bike|
+    bikes_query.map do |bike|
       {
         id: bike.id,
         name: bike.name,
@@ -17,6 +17,14 @@ class BikeSearch < Service
   end
 
   private
+
+  def bikes_query
+    if date.present?
+      available_on(bikes_with_popularity)
+    else
+      bikes_with_popularity
+    end
+  end
 
   attr_reader :date
 
@@ -32,5 +40,18 @@ class BikeSearch < Service
       .distinct
       .select('bikes.*, COUNT(popularity.*) AS popularity_count')
       .group('bikes.id')
+  end
+
+  AVAILABILITY_JOIN = %Q(
+    LEFT OUTER JOIN bookings availability
+    ON availability.bike_id = bikes.id
+    AND availability.status = 0
+    AND availability.date = '%{date}'
+  )
+  def available_on(query)
+    query
+      .joins(AVAILABILITY_JOIN % { date: date } )
+      .select('COUNT(availability.*) AS booking_count')
+      .having('COUNT(availability.*) = 0')
   end
 end
