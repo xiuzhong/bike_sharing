@@ -1,5 +1,4 @@
 class CustomerBooking < Booking
-  validates :user_full_name, presence: true
   validate :today_or_in_future
 
   def today_or_in_future

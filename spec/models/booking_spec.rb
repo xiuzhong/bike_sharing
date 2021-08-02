@@ -1,24 +1,58 @@
 require 'rails_helper'
 
 RSpec.describe Booking, type: :model do
-  it "allows bookings in the future" do
-    future_booking = Booking.new(date: Date.tomorrow)
-    future_booking.valid?
+  describe 'bike availablity' do
+    before { another.valid? }
 
-    expect(future_booking.errors[:date]).to be_empty
-  end
+    context 'same bike and date' do
+      subject(:another) { Booking.new(date: booking.date, bike: booking.bike ) }
+      context 'an active booking exists' do
+        let(:booking) { FactoryBot.create(:customer_booking) }
 
-  it "validates that the date is not in the past" do
-    past_booking = Booking.new(date: Date.yesterday)
-    past_booking.valid?
+        it 'does not allow another booking' do
+          expect(another.errors[:bike_id]).to include(/not available/)
+        end
+      end
 
-    expect(past_booking.errors[:date]).to include("can't be in the past")
-  end
+      context 'a cancelled booking exists' do
+        let!(:booking) { FactoryBot.create(:customer_booking, status: :cancelled) }
 
-  it "allows bookings todays" do
-    future_booking = Booking.new(date: Date.today)
-    future_booking.valid?
+        it 'allow another booking' do
+          expect(another.errors[:bike_id]).to be_empty
+        end
+      end
 
-    expect(future_booking.errors[:date]).to be_empty
+      context 'the bike is not available' do
+        let(:booking) { FactoryBot.create(:owner_booking) }
+
+        it 'does not allow a booking' do
+          expect(another.errors[:bike_id]).to include(/not available/)
+        end
+      end
+    end
+
+    context 'different bike on the same date' do
+      subject(:another) { Booking.new(date: booking.date ) }
+
+      context 'an active booking exists' do
+        let(:booking) { FactoryBot.create(:customer_booking) }
+
+        it 'allow booking' do
+          expect(another.errors[:bike_id]).to be_empty
+        end
+      end
+    end
+
+    context 'the same bike on different date' do
+      subject(:another) { Booking.new(bike: booking.bike, date: 30.days.from_now.to_date ) }
+
+      context 'an active booking exists' do
+        let(:booking) { FactoryBot.create(:customer_booking) }
+
+        it 'allow booking' do
+          expect(another.errors[:bike_id]).to be_empty
+        end
+      end
+    end
   end
 end
