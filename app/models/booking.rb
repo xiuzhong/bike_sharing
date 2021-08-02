@@ -7,5 +7,5 @@ class Booking < ApplicationRecord
   validates_uniqueness_of :bike_id,
     scope: :date,
     conditions: -> { where(status: :active) },
-    message: 'not available any longer'
+    message: 'is not available any longer'
 end

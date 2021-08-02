@@ -26,10 +26,23 @@ RSpec.describe CreateBooking do
     expect(result).to be_a Booking
   end
 
+  it "prevents a booking without a full user name" do
+    booking_date = 2.days.from_now
+    bike = FactoryBot.create(:bike)
+
+    booking = described_class.run(
+      bike_id: bike.id,
+      date: booking_date,
+      user_full_name: '',
+    )
+
+    expect(booking.errors.full_messages).to include(/can't be blank/)
+  end
+
   it "prevents a booking on the same date as an existing booking" do
     booking_date = 2.days.from_now
     bike = FactoryBot.create(:bike)
-    conflicting_booking = FactoryBot.create(:booking, bike: bike, date: booking_date)
+    conflicting_booking = FactoryBot.create(:customer_booking, bike: bike, date: booking_date)
 
     booking = described_class.run(
       bike_id: bike.id,
@@ -37,6 +50,20 @@ RSpec.describe CreateBooking do
       user_full_name: 'Percy Winter',
     )
 
-    expect(booking.errors.full_messages).to include("Date is not available for this bike")
+    expect(booking.errors.full_messages).to include(/Bike is not available/)
+  end
+
+  it "prevents a booking on the day when the bike is not available" do
+    booking_date = 2.days.from_now
+    bike = FactoryBot.create(:bike)
+    unavailable = FactoryBot.create(:owner_booking, bike: bike, date: booking_date)
+
+    booking = described_class.run(
+      bike_id: bike.id,
+      date: booking_date,
+      user_full_name: 'Percy Winter',
+    )
+
+    expect(booking.errors.full_messages).to include(/Bike is not available/)
   end
 end
