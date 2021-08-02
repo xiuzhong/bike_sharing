@@ -3,44 +3,33 @@ require 'rails_helper'
 RSpec.describe BikeSearch do
   let(:alpha) { FactoryBot.create(:bike, name: 'alpha', price_per_day: 10) }
   let(:beta) { FactoryBot.create(:bike, name: 'beta', price_per_day: 7) }
-  let(:delta) { FactoryBot.create(:bike, name: 'delta', price_per_day: 5) }
 
   before do
-    # beta has three active bookings
-    3.times { |i| FactoryBot.create(:customer_booking, bike: beta, date: Date.today + i) }
-    # delta has zero active booking, but two owner booking
-    2.times { |i| FactoryBot.create(:owner_booking, bike: delta, date: Date.today + i) }
-    # alpha has one active booking, and three cancelled booking
-    1.times { |i| FactoryBot.create(:customer_booking, bike: alpha, date: Date.today + i) }
+    # alpha has no active booking, but three cancelled booking
     3.times do |i|
       FactoryBot.create(:customer_booking, bike: alpha, date: Date.today + i, status: :cancelled)
     end
+    # beta has two active bookings and one owner booking
+    2.times { |i| FactoryBot.create(:customer_booking, bike: beta, date: Date.today + i) }
+    FactoryBot.create(:owner_booking, bike: beta, date: Date.today + 5)
   end
 
-  it "sort on name by default" do
-    expect(described_class.run.map(&:name)).to eq %w(alpha beta delta)
-  end
+  subject(:bikes) { described_class.run }
 
-  it "sort on name" do
-    expect(described_class.run(sort_by: :name).map(&:name)).to eq %w(alpha beta delta)
-  end
-
-  it "sort on price" do
-    expect(described_class.run(sort_by: :price).map(&:name)).to eq %w(delta beta alpha)
-  end
-
-  it "sort on popularity" do
-    byebug
-    expect(described_class.run(sort_by: :popularity).map(&:name)).to eq %w(beta alpha delta)
-  end
-
-  context 'when popularity increases' do
-    before do
-      3.times { |i| FactoryBot.create(:customer_booking, bike: alpha, date: 1.day.from_now + i) }
-    end
-
-    it "sort on popularity" do
-      expect(described_class.run(sort_by: :popularity).map(&:name)).to eq %w(alpha beta delta)
-    end
+  it "returns bikes correctly" do
+    expect(bikes).to include(
+      hash_including(
+        id: alpha.id,
+        name: 'alpha',
+        price_per_day: alpha.price_per_day,
+        popularity: 0
+      ),
+      hash_including(
+        id: beta.id,
+        name: 'beta',
+        price_per_day: beta.price_per_day,
+        popularity: 2
+      )
+    )
   end
 end

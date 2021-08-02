@@ -1,25 +1,24 @@
 class BikeSearch < Service
-  def initialize(sort_by: :name, date: nil)
-    @sort_by = sort_by
+  def initialize(date: nil)
     @date = date
   end
 
   def run
-    query = Bike.all
-
-    case sort_by
-    when :price
-      query.order(:price_per_day)
-    when :popularity
-      sort_on_popularity(query)
-    else
-      query.order(:name)
+    bikes_with_popularity.map do |bike|
+      {
+        id: bike.id,
+        name: bike.name,
+        image_name: bike.image_name,
+        description: bike.description,
+        price_per_day: bike.price_per_day,
+        popularity: bike.popularity_count
+      }
     end
   end
 
   private
 
-  attr_reader :sort_by, :date
+  attr_reader :date
 
   POPULARITY_JOIN = %q(
     LEFT OUTER JOIN bookings popularity
@@ -27,12 +26,11 @@ class BikeSearch < Service
     AND popularity.status = 0
     AND popularity.type = 'CustomerBooking'
   )
-  def sort_on_popularity(query)
-    query
+  def bikes_with_popularity
+    Bike
       .joins(POPULARITY_JOIN)
       .distinct
       .select('bikes.*, COUNT(popularity.*) AS popularity_count')
       .group('bikes.id')
-      .order('popularity_count DESC')
   end
 end
